@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#14123a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Gridlet">
+<meta name="description" content="Gridlet: a fresh 5x5 mini crossword every day.">
+<title>Gridlet · Daily Mini Crossword</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="bg" aria-hidden="true"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span></div>
+<div id="app">
+  <header class="top">
+    <button class="icon-btn" id="btnHelp" aria-label="How to play">?</button>
+    <div class="brand">
+      <span class="logo" aria-hidden="true"><i></i><i></i><i></i><i class="k"></i></span>
+      <h1>Gridlet</h1>
+    </div>
+    <div class="top-right">
+      <button class="icon-btn" id="btnArchive" aria-label="Archive">
+        <svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>
+      </button>
+      <button class="icon-btn" id="btnStats" aria-label="Stats">
+        <svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V5M19 20v-6"/></svg>
+      </button>
+      <button class="icon-btn" id="btnTheme" aria-label="Toggle light or dark mode">
+        <svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M5.2 18.8l1.6-1.6M17.2 6.8l1.6-1.6"/></svg>
+        <svg class="moon" viewBox="0 0 24 24"><path d="M19.5 14.5A8 8 0 0 1 9.5 4.5a8 8 0 1 0 10 10z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="subbar">
+    <div class="meta"><span id="puzzleTitle">Today</span><span class="dot">·</span><span id="puzzleDate"></span></div>
+    <div class="tools">
+      <span class="streak-chip" id="streakChip" title="Daily streak"><span class="flame">🔥</span><b id="streakNum">0</b></span>
+      <button class="timer" id="btnTimer" aria-label="Pause"><span id="timerText">0:00</span><svg class="pause-ic" viewBox="0 0 24 24"><path d="M9 6v12M15 6v12"/></svg></button>
+      <div class="menu-wrap">
+        <button class="pill" id="btnCheck">Check</button>
+        <div class="menu" id="menuCheck" role="menu">
+          <button data-act="check-letter">Check letter</button>
+          <button data-act="check-word">Check word</button>
+          <button data-act="check-puzzle">Check puzzle</button>
+          <hr>
+          <button data-act="reveal-letter">Reveal letter</button>
+          <button data-act="reveal-word">Reveal word</button>
+          <button data-act="reveal-puzzle">Reveal puzzle</button>
+          <hr>
+          <button data-act="clear">Clear puzzle</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="play">
+    <div class="board-wrap">
+      <div class="board" id="board" aria-label="Crossword grid"></div>
+      <div class="paused-veil" id="pausedVeil"><button class="big-btn" id="btnResume">Resume</button></div>
+    </div>
+    <section class="clues" id="clueLists">
+      <div class="clue-col"><h2>Across</h2><ol id="acrossList"></ol></div>
+      <div class="clue-col"><h2>Down</h2><ol id="downList"></ol></div>
+    </section>
+  </main>
+
+  <footer class="dock">
+    <div class="cluebar" id="clueBar">
+      <button class="cb-arrow" id="cbPrev" aria-label="Previous clue">‹</button>
+      <div class="cb-text" id="cbText"><span class="cb-num" id="cbNum"></span><span id="cbClue"></span></div>
+      <button class="cb-arrow" id="cbNext" aria-label="Next clue">›</button>
+    </div>
+    <div class="kbd" id="kbd"></div>
+  </footer>
+</div>
+
+<!-- Start screen -->
+<div class="overlay show" id="startOverlay">
+  <div class="card start-card">
+    <span class="logo big" aria-hidden="true"><i></i><i></i><i></i><i class="k"></i></span>
+    <h2 class="start-title">Gridlet</h2>
+    <p class="start-sub">A fresh five-by-five crossword, every single day.</p>
+    <p class="start-date" id="startDate"></p>
+    <button class="big-btn" id="btnPlay">Play</button>
+    <p class="start-foot" id="startFoot"></p>
+  </div>
+</div>
+
+<!-- Solved -->
+<div class="overlay" id="solvedOverlay">
+  <div class="card solved-card">
+    <button class="close" data-close>&times;</button>
+    <div class="trophy">🏆</div>
+    <h2 id="solvedHead">Solved!</h2>
+    <p class="solved-time"><span id="solvedTime">0:00</span></p>
+    <p class="solved-msg" id="solvedMsg"></p>
+    <div class="solved-row">
+      <div class="mini-stat gold"><b id="sStreak">0</b><span>Day streak</span></div>
+      <div class="mini-stat"><b id="sBest">–</b><span>Best time</span></div>
+      <div class="mini-stat"><b id="sSolved">0</b><span>Solved</span></div>
+    </div>
+    <button class="big-btn" id="btnShare">Share result</button>
+    <p class="next-in">Next Gridlet in <b class="countdown">--:--:--</b></p>
+    <div class="solved-links"><button class="link" id="btnSolvedStats">See stats</button><button class="link" id="btnSolvedArchive">Play the archive</button></div>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="overlay" id="statsOverlay">
+  <div class="card">
+    <button class="close" data-close>&times;</button>
+    <h2>Your stats</h2>
+    <div class="stat-grid">
+      <div><b id="stPlayed">0</b><span>Played</span></div>
+      <div><b id="stPct">0</b><span>Solved %</span></div>
+      <div class="gold"><b id="stStreak">0</b><span>Streak</span></div>
+      <div><b id="stMax">0</b><span>Max streak</span></div>
+      <div><b id="stAvg">–</b><span>Avg time</span></div>
+      <div><b id="stBest">–</b><span>Best time</span></div>
+    </div>
+    <h3>Solve times</h3>
+    <div class="dist" id="dist"></div>
+    <p class="next-in">Next Gridlet in <b class="countdown">--:--:--</b></p>
+  </div>
+</div>
+
+<!-- Archive -->
+<div class="overlay" id="archiveOverlay">
+  <div class="card archive-card">
+    <button class="close" data-close>&times;</button>
+    <h2>Archive</h2>
+    <p class="muted">Every past Gridlet, ready to play. <span class="legend"><i class="lg solved"></i>solved <i class="lg prog"></i>started</span></p>
+    <div class="arch-nav"><button class="pill" id="archPrev">‹</button><b id="archMonth"></b><button class="pill" id="archNext">›</button></div>
+    <div class="arch-grid" id="archGrid"></div>
+  </div>
+</div>
+
+<!-- Help -->
+<div class="overlay" id="helpOverlay">
+  <div class="card">
+    <button class="close" data-close>&times;</button>
+    <h2>How to play</h2>
+    <ul class="help">
+      <li>Fill the grid so every Across and Down answer fits its clue.</li>
+      <li><b>Tap a square</b> to select it. Tap it again to switch between Across and Down.</li>
+      <li>Tap the <b>clue bar</b> to switch direction, or the arrows to hop between clues.</li>
+      <li>Stuck? <b>Check</b> or <b>Reveal</b> a letter, word or the whole puzzle.</li>
+      <li>On a keyboard: arrows move, <b>Space</b> switches direction, <b>Tab</b> jumps to the next clue.</li>
+      <li>A brand-new puzzle drops every day at midnight. Solve daily to grow your <span class="gold-t">streak</span>.</li>
+    </ul>
+    <button class="big-btn" data-close>Got it</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<script src="puzzles.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
